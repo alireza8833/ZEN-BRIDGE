@@ -1,0 +1,162 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Zenchain Bridge</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #000;
+      color: #0f0;
+      font-size: 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #111;
+      padding: 20px;
+      border-bottom: 1px solid #0f0;
+    }
+
+    .title {
+      font-size: 32px;
+      text-align: center;
+      flex: 1;
+    }
+
+    .user-id {
+      font-size: 18px;
+    }
+
+    .container {
+      padding: 40px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    select, input[type="number"], button {
+      width: 100%;
+      padding: 14px;
+      margin: 25px 0;
+      background-color: #222;
+      color: #0f0;
+      border: 1px solid #0f0;
+      border-radius: 8px;
+      font-size: 20px;
+    }
+
+    label {
+      font-size: 22px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .token-icon {
+      display: inline-block;
+      background-color: #0f0;
+      color: #000;
+      font-weight: bold;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 40px;
+      margin: 10px;
+      font-size: 20px;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      font-size: 18px;
+      color: #0f0;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    footer img {
+      height: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div></div>
+    <div class="title">zenchain bridge</div>
+    <div class="user-id">@alireza_real83</div>
+  </header>
+
+  <div class="container">
+    <div>
+      <span class="token-icon">Z</span>
+      <span class="token-icon">Z</span>
+    </div>
+
+    <label for="network">Select Bridge Direction:</label>
+    <select id="network">
+      <option value="zen-to-sepolia">From Zenchain to Sepolia</option>
+      <option value="sepolia-to-zen">From Sepolia to Zenchain</option>
+    </select>
+
+    <label for="amount">Enter Amount:</label>
+    <input type="number" id="amount" placeholder="e.g., 10">
+
+    <button onclick="bridgeTokens()">Bridge Tokens</button>
+
+    <div>
+      <span class="token-icon">Z</span>
+    </div>
+  </div>
+
+  <footer>
+    <span>zenchain</span>
+    <img src="https://i.ibb.co/vsJbQ1k/zenchain-logo.png" alt="Zenchain Logo">
+  </footer>
+
+  <script>
+    async function bridgeTokens() {
+      if (!window.ethereum) {
+        alert("Please install MetaMask to continue.");
+        return;
+      }
+
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      const signer = provider.getSigner();
+
+      const networkSelection = document.getElementById("network").value;
+      const amount = document.getElementById("amount").value;
+
+      const bridgeContractAddress = "0xYourZenchainBridgeContract";
+      const abi = [
+        "function bridgeToSepolia(uint256 amount) public",
+        "function bridgeToZenchain(uint256 amount) public"
+      ];
+      const contract = new ethers.Contract(bridgeContractAddress, abi, signer);
+
+      try {
+        let tx;
+        if (networkSelection === "zen-to-sepolia") {
+          tx = await contract.bridgeToSepolia(ethers.utils.parseEther(amount));
+        } else {
+          tx = await contract.bridgeToZenchain(ethers.utils.parseEther(amount));
+        }
+        await tx.wait();
+        alert("Transaction successful!");
+      } catch (err) {
+        console.error(err);
+        alert("Transaction failed.");
+      }
+    }
+  </script>
+
+</body>
+</html>
