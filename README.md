@@ -1,1 +1,1 @@
-# ZEN-BRIDGE
+# ZEN-CHAIN
