@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Zen Stake</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js">
+    function setMaxAmount() {
+      // Sample max value (real implementation should fetch from token balance)
+      const maxAmount = 10000;
+      document.getElementById("stakeAmount").value = maxAmount;
+      document.getElementById("status").textContent = "Max amount set to " + maxAmount + " ZTC.";
+    }
+
+</script>
+  <style>
+    body {
+      background-color: #000;
+      color: #0f0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 18px;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px;
+      border-bottom: 2px solid #0f0;
+    }
+
+    .title {
+      font-size: 36px;
+      font-weight: bold;
+    }
+
+    .user-id {
+      font-size: 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+      border: 2px solid #0f0;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,255,0,0.3);
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-size: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      font-size: 18px;
+      margin-top: 8px;
+      background-color: #111;
+      color: #0f0;
+      border: 1px solid #0f0;
+      border-radius: 5px;
+    }
+
+    button {
+      margin-top: 30px;
+      width: 100%;
+      padding: 15px;
+      background-color: #0f0;
+      color: #000;
+      font-size: 22px;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background-color: #0c0;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      border-top: 2px solid #0f0;
+      font-size: 22px;
+      margin-top: 60px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title">Zen Stake</div>
+    <div class="user-id">alireza_real83</div>
+  </header>
+
+  <div class="container">
+    <label for="walletAddress">Wallet Address:</label>
+    <input type="text" id="walletAddress" placeholder="Enter your wallet address" />
+
+    <label for="stakeAmount">Amount to Stake (ZTC):</label>
+    
+    <div style="display: flex; gap: 10px; align-items: center;">
+      <input type="number" id="stakeAmount" placeholder="Enter amount to stake" style="flex: 1;" />
+      <button onclick="setMaxAmount()" style="width: 80px; padding: 10px; font-size: 16px;">Max</button>
+    </div>
+    
+
+    
+    <div id="status" style="margin-top: 20px; color: #0f0;"></div>
+    <button onclick="stakeTokens()">Stake Now</button>
+    
+  </div>
+
+  <footer>
+    zenchain
+  </footer>
+
+  <script>
+    async function stakeTokens() {
+      if (typeof window.ethereum === 'undefined') {
+        alert("Please install MetaMask!");
+        return;
+      }
+
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+
+      const signer = provider.getSigner();
+      const userAddress = await signer.getAddress();
+
+      const walletAddress = document.getElementById("walletAddress").value;
+      const amount = document.getElementById("stakeAmount").value;
+
+      
+      const status = document.getElementById("status");
+      if (!walletAddress || !amount) {
+        status.textContent = "Please fill in all fields.";
+        return;
+      }
+      if (parseFloat(amount) > 10000) {
+        status.textContent = "Amount exceeds max limit (10,000 ZTC).";
+        return;
+      }
+      status.textContent = "Sending transaction...";
+    
+        alert("Please enter wallet address and amount.");
+        return;
+      }
+
+      const contractAddress = "0xYourZenchainStakingContractAddress";
+      const abi = [
+        "function stake(address user, uint256 amount) public"
+      ];
+
+      const contract = new ethers.Contract(contractAddress, abi, signer);
+
+      try {
+        const tx = await contract.stake(walletAddress, ethers.utils.parseUnits(amount, 18));
+        
+        status.textContent = "Transaction sent! Tx hash: " + tx.hash;
+    
+      } catch (err) {
+        console.error(err);
+        
+        status.textContent = "Transaction failed. See console for details.";
+    
+      }
+    }
+  
+    function setMaxAmount() {
+      // Sample max value (real implementation should fetch from token balance)
+      const maxAmount = 10000;
+      document.getElementById("stakeAmount").value = maxAmount;
+      document.getElementById("status").textContent = "Max amount set to " + maxAmount + " ZTC.";
+    }
+
+</script>
+</body>
+</html>
