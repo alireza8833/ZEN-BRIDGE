@@ -1,0 +1,13 @@
+# Reading C:/altera/81/modelsim_ae/tcl/vsim/pref.tcl 
+# Loading project az
+# Compile of az.vhd failed with 1 errors.
+# Compile of az.vhd was successful.
+# Load canceled
+# Load canceled
+# Compile of az.vhd was successful.
+view wave
+# .main_pane.mdi.interior.cs.vm.paneset.cli_1.wf.clip.cs.pw.wf
+# reading C:\altera\81\modelsim_ae\win32aloem/../modelsim.ini
+# Loading project az2
+# Compile of and gate.vhd failed with 1 errors.
+# Compile of and gate.vhd was successful.
